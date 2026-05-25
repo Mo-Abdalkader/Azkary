@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0f1e" />
+  <meta name="description" content="تطبيق الأذكار والأدعية الإسلامية — رفيقك الروحاني اليومي" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="أذكاري" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <title>أذكاري — رفيق الذاكرين</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-mode">
+
+  <!-- ░░░ LOADING SCREEN ░░░ -->
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-crescent">
+        <svg viewBox="0 0 100 100" class="crescent-svg">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="url(#grad1)" stroke-width="2" stroke-dasharray="251" stroke-dashoffset="251" class="loader-ring" />
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#10b981" />
+              <stop offset="100%" style="stop-color:#d97706" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="loader-bismillah">بِسْمِ اللَّهِ</span>
+      </div>
+      <p class="loader-text">جاري التحميل…</p>
+    </div>
+  </div>
+
+  <!-- ░░░ INSTALL BANNER ░░░ -->
+  <div id="installBanner" class="install-banner hidden">
+    <div class="install-banner-content">
+      <span class="install-icon">📲</span>
+      <span>ثبّت التطبيق على جهازك</span>
+    </div>
+    <div class="install-banner-actions">
+      <button id="installBtn" class="btn-install">تثبيت</button>
+      <button id="dismissInstall" class="btn-dismiss">×</button>
+    </div>
+  </div>
+
+  <!-- ░░░ NAVBAR ░░░ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">📿</span>
+      <span class="nav-title">أذكاري</span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#home"      class="nav-link active" data-page="home">      🏠 الرئيسية  </a>
+      <a href="#library"   class="nav-link"         data-page="library">  📚 المكتبة   </a>
+      <a href="#tasbeeh"   class="nav-link"         data-page="tasbeeh">  📿 المسبحة   </a>
+      <a href="#dashboard" class="nav-link"         data-page="dashboard">📊 إحصائياتي </a>
+      <a href="#favorites" class="nav-link"         data-page="favorites">⭐ المفضلة   </a>
+    </div>
+    <div class="nav-actions">
+      <button id="themeToggle" class="btn-icon" title="تغيير المظهر">🌙</button>
+      <button id="searchToggle" class="btn-icon" title="بحث">🔍</button>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ░░░ MOBILE NAV DRAWER ░░░ -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="drawer-logo">📿 أذكاري</span>
+      <button class="drawer-close" id="drawerClose">×</button>
+    </div>
+    <div class="drawer-links">
+      <a href="#home"      class="drawer-link" data-page="home">      🏠 الرئيسية  </a>
+      <a href="#library"   class="drawer-link" data-page="library">  📚 المكتبة   </a>
+      <a href="#tasbeeh"   class="drawer-link" data-page="tasbeeh">  📿 المسبحة   </a>
+      <a href="#dashboard" class="drawer-link" data-page="dashboard">📊 إحصائياتي </a>
+      <a href="#favorites" class="drawer-link" data-page="favorites">⭐ المفضلة   </a>
+    </div>
+    <div class="drawer-footer">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+  </div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <!-- ░░░ SEARCH OVERLAY ░░░ -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+      <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن دعاء أو ذكر…" autocomplete="off" />
+      <button id="searchClose" class="search-close">×</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+
+  <!-- ░░░ MAIN CONTENT ░░░ -->
+  <main class="main" id="main">
+
+    <!-- ════════════════ PAGE: HOME ════════════════ -->
+    <section class="page active" id="page-home">
+
+      <!-- HERO -->
+      <div class="hero" id="hero">
+        <canvas id="starCanvas" class="star-canvas"></canvas>
+        <div class="hero-glow"></div>
+        <div class="mosque-silhouette">
+          <svg viewBox="0 0 800 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,300 L0,220 L60,220 L60,200 L80,200 L80,180 L100,180 L100,160 L120,160 L120,180 L140,180 L140,200 L160,200 L160,220 L220,220 L220,240 L240,240 L240,200 L260,160 L280,120 L300,100 L310,80 L320,60 L330,40 L340,30 L350,25 L360,30 L370,40 L380,60 L390,80 L400,100 L420,120 L440,160 L460,200 L460,240 L480,240 L480,220 L540,220 L540,200 L560,200 L560,180 L580,180 L580,160 L600,160 L600,180 L620,180 L620,200 L640,200 L640,220 L700,220 L700,240 L720,240 L720,200 L730,150 L740,100 L750,80 L760,60 L770,40 L780,30 L790,25 L800,25 L800,300 Z" fill="currentColor" opacity="0.06"/>
+          </svg>
+        </div>
+
+        <div class="hero-content">
+          <div class="hero-greeting reveal">
+            <span class="bismillah-text">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</span>
+          </div>
+          <div class="hero-dates reveal" id="heroDates">
+            <div class="date-card">
+              <span class="date-label">التاريخ الميلادي</span>
+              <span class="date-value" id="gregorianDate">—</span>
+            </div>
+            <div class="date-divider">✦</div>
+            <div class="date-card">
+              <span class="date-label">التاريخ الهجري</span>
+              <span class="date-value" id="hijriDate">—</span>
+            </div>
+          </div>
+          <div class="hero-quote reveal" id="heroQuote">
+            <p class="quote-arabic" id="quoteArabic"></p>
+            <p class="quote-source" id="quoteSource"></p>
+            <p class="quote-note" id="quoteNote"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACCESS GRID -->
+      <div class="section-wrap">
+        <h2 class="section-title reveal">⚡ وصول سريع</h2>
+        <div class="quick-grid reveal">
+          <button class="quick-card" data-goto="morning">
+            <span class="qc-icon">🌅</span>
+            <span class="qc-label">أذكار الصباح</span>
+            <span class="qc-count" id="qc-morning"></span>
+          </button>
+          <button class="quick-card" data-goto="evening">
+            <span class="qc-icon">🌙</span>
+            <span class="qc-label">أذكار المساء</span>
+            <span class="qc-count" id="qc-evening"></span>
+          </button>
+          <button class="quick-card" data-goto="sleep">
+            <span class="qc-icon">🌌</span>
+            <span class="qc-label">أذكار النوم</span>
+            <span class="qc-count" id="qc-sleep"></span>
+          </button>
+          <button class="quick-card" data-goto="after_prayer">
+            <span class="qc-icon">🕌</span>
+            <span class="qc-label">بعد الصلاة</span>
+            <span class="qc-count" id="qc-after_prayer"></span>
+          </button>
+          <button class="quick-card" data-goto="quranic_duas">
+            <span class="qc-icon">📗</span>
+            <span class="qc-label">أدعية قرآنية</span>
+            <span class="qc-count" id="qc-quranic_duas"></span>
+          </button>
+          <button class="quick-card" data-goto="tasbeeh" data-page="tasbeeh">
+            <span class="qc-icon">📿</span>
+            <span class="qc-label">المسبحة الرقمية</span>
+            <span class="qc-count">∞</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DAILY REMINDER -->
+      <div class="section-wrap reveal">
+        <div class="daily-reminder" id="dailyReminder">
+          <div class="reminder-badge">💡 تذكير اليوم</div>
+          <p class="reminder-arabic" id="reminderArabic"></p>
+          <p class="reminder-source" id="reminderSource"></p>
+          <p class="reminder-note" id="reminderNote"></p>
+        </div>
+      </div>
+
+      <!-- STATS PREVIEW -->
+      <div class="section-wrap reveal">
+        <h2 class="section-title">📊 ملخص عبادتي</h2>
+        <div class="stats-mini">
+          <div class="stat-mini-card">
+            <span class="stat-mini-icon">📿</span>
+            <span class="stat-mini-val" id="miniTotal">0</span>
+            <span class="stat-mini-label">إجمالي التسبيح</span>
+          </div>
+          <div class="stat-mini-card">
+            <span class="stat-mini-icon">🔥</span>
+            <span class="stat-mini-val" id="miniStreak">0</span>
+            <span class="stat-mini-label">أيام متتالية</span>
+          </div>
+          <div class="stat-mini-card">
+            <span class="stat-mini-icon">⭐</span>
+            <span class="stat-mini-val" id="miniFavs">0</span>
+            <span class="stat-mini-label">المفضلة</span>
+          </div>
+          <div class="stat-mini-card">
+            <span class="stat-mini-icon">🌙</span>
+            <span class="stat-mini-val" id="miniToday">0</span>
+            <span class="stat-mini-label">تسبيح اليوم</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ════════════════ PAGE: LIBRARY ════════════════ -->
+    <section class="page" id="page-library">
+      <div class="library-header">
+        <h1 class="library-title">📚 مكتبة الأذكار والأدعية</h1>
+        <p class="library-subtitle">اختر فئة للاستعراض</p>
+      </div>
+
+      <!-- FILTER TABS -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">الكل</button>
+        <button class="filter-tab" data-filter="azkar">الأذكار</button>
+        <button class="filter-tab" data-filter="duas">الأدعية</button>
+      </div>
+
+      <!-- CATEGORY GRID -->
+      <div class="category-grid" id="categoryGrid"></div>
+
+      <!-- DUA LIST VIEW -->
+      <div class="dua-list-view hidden" id="duaListView">
+        <div class="dua-list-header">
+          <button class="btn-back" id="backToCategories">← رجوع</button>
+          <h2 class="dua-list-title" id="duaListTitle"></h2>
+        </div>
+        <div class="dua-cards" id="duaCards"></div>
+      </div>
+    </section>
+
+    <!-- ════════════════ PAGE: TASBEEH ════════════════ -->
+    <section class="page" id="page-tasbeeh">
+      <div class="tasbeeh-page">
+        <h1 class="tasbeeh-title">📿 المسبحة الرقمية</h1>
+
+        <!-- Selector -->
+        <div class="tasbeeh-selector">
+          <label class="selector-label">اختر الذكر</label>
+          <div class="selector-scroll" id="tasbeehSelector"></div>
+        </div>
+
+        <!-- Counter Circle -->
+        <div class="tasbeeh-arena" id="tasbeehArena">
+          <div class="tasbeeh-ring-wrap">
+            <svg class="tasbeeh-ring" viewBox="0 0 220 220">
+              <defs>
+                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stop-color="#10b981"/>
+                  <stop offset="50%"  stop-color="#14b8a6"/>
+                  <stop offset="100%" stop-color="#d97706"/>
+                </linearGradient>
+              </defs>
+              <circle cx="110" cy="110" r="100" class="ring-bg" />
+              <circle cx="110" cy="110" r="100" class="ring-progress" id="ringProgress"
+                stroke-dasharray="628" stroke-dashoffset="628" />
+            </svg>
+            <div class="tasbeeh-center" id="tasbeehCenter">
+              <span class="tasbeeh-count" id="tasbeehCount">٠</span>
+              <span class="tasbeeh-target" id="tasbeehTarget">/ ٣٣</span>
+            </div>
+          </div>
+          <p class="tasbeeh-arabic" id="tasbeehArabic">سُبْحَانَ اللَّهِ</p>
+          <p class="tasbeeh-translation" id="tasbeehTranslation">سبحان الله</p>
+          <div class="tasbeeh-tap-hint">اضغط على الدائرة للعدّ</div>
+        </div>
+
+        <!-- Controls -->
+        <div class="tasbeeh-controls">
+          <button class="tc-btn danger" id="resetBtn">↺ إعادة</button>
+          <button class="tc-btn primary" id="undoBtn">↩ تراجع</button>
+          <button class="tc-btn muted" id="soundToggle">🔊 صوت</button>
+        </div>
+
+        <!-- Session Stats -->
+        <div class="tasbeeh-stats">
+          <div class="ts-card"><span class="ts-val" id="sessionCount">٠</span><span class="ts-label">هذه الجلسة</span></div>
+          <div class="ts-card"><span class="ts-val" id="todayCount">٠</span><span class="ts-label">اليوم</span></div>
+          <div class="ts-card"><span class="ts-val" id="lifetimeCount">٠</span><span class="ts-label">الإجمالي</span></div>
+          <div class="ts-card"><span class="ts-val" id="bestDayCount">٠</span><span class="ts-label">أفضل يوم</span></div>
+        </div>
+
+        <!-- Weekly Chart -->
+        <div class="section-wrap">
+          <h3 class="section-title">📈 نشاط الأسبوع</h3>
+          <div class="weekly-chart" id="weeklyChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ PAGE: DASHBOARD ════════════════ -->
+    <section class="page" id="page-dashboard">
+      <div class="dashboard-page">
+        <h1 class="dashboard-title">📊 إحصائياتي</h1>
+
+        <div class="dash-grid">
+          <div class="dash-card accent-green">
+            <div class="dash-icon">📿</div>
+            <div class="dash-info">
+              <span class="dash-val" id="dashTotal">٠</span>
+              <span class="dash-label">إجمالي التسبيح</span>
+            </div>
+          </div>
+          <div class="dash-card accent-gold">
+            <div class="dash-icon">🌙</div>
+            <div class="dash-info">
+              <span class="dash-val" id="dashToday">٠</span>
+              <span class="dash-label">تسبيح اليوم</span>
+            </div>
+          </div>
+          <div class="dash-card accent-purple">
+            <div class="dash-icon">🔥</div>
+            <div class="dash-info">
+              <span class="dash-val" id="dashStreak">٠</span>
+              <span class="dash-label">أيام متتالية</span>
+            </div>
+          </div>
+          <div class="dash-card accent-cyan">
+            <div class="dash-icon">⭐</div>
+            <div class="dash-info">
+              <span class="dash-val" id="dashFavs">٠</span>
+              <span class="dash-label">المفضلة</span>
+            </div>
+          </div>
+          <div class="dash-card accent-red">
+            <div class="dash-icon">🏆</div>
+            <div class="dash-info">
+              <span class="dash-val" id="dashBest">٠</span>
+              <span class="dash-label">أفضل يوم</span>
+            </div>
+          </div>
+          <div class="dash-card accent-teal">
+            <div class="dash-icon">📖</div>
+            <div class="dash-info">
+              <span class="dash-val" id="dashViewed">٠</span>
+              <span class="dash-label">أدعية شُوهدت</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motivation -->
+        <div class="motivation-card reveal">
+          <p class="motivation-text" id="motivationText"></p>
+        </div>
+
+        <!-- Top Tasbeeh -->
+        <div class="section-wrap reveal">
+          <h3 class="section-title">🏅 أكثر ما سبّحت</h3>
+          <div id="topTasbeeh" class="top-tasbeeh-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ PAGE: FAVORITES ════════════════ -->
+    <section class="page" id="page-favorites">
+      <div class="section-wrap">
+        <h1 class="library-title">⭐ المفضلة</h1>
+        <p class="library-subtitle" id="favSubtitle">أدعيتك وأذكارك المفضلة</p>
+        <div class="dua-cards" id="favCards"></div>
+        <div class="empty-state hidden" id="favEmpty">
+          <div class="empty-icon">⭐</div>
+          <p>لم تضف شيئاً للمفضلة بعد</p>
+          <p class="empty-hint">اضغط على ⭐ في أي دعاء لإضافته هنا</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ░░░ BOTTOM MOBILE NAV ░░░ -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="bn-item active" data-page="home">      <span>🏠</span><span>الرئيسية</span>  </button>
+    <button class="bn-item"        data-page="library">   <span>📚</span><span>المكتبة</span>   </button>
+    <button class="bn-item"        data-page="tasbeeh">   <span>📿</span><span>المسبحة</span>   </button>
+    <button class="bn-item"        data-page="dashboard"> <span>📊</span><span>إحصائياتي</span> </button>
+    <button class="bn-item"        data-page="favorites"> <span>⭐</span><span>المفضلة</span>   </button>
+  </nav>
+
+  <!-- ░░░ BACK TO TOP ░░░ -->
+  <button class="back-to-top hidden" id="backToTop" title="للأعلى">↑</button>
+
+  <!-- ░░░ TOAST ░░░ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ░░░ FOOTER ░░░ -->
+  <footer class="footer" id="footer">
+    <div class="footer-card">
+      <div class="footer-top">
+        <div class="footer-avatar">
+          <div class="avatar-circle">🌙</div>
+        </div>
+        <div class="footer-info">
+          <h3 class="footer-name">أذكاري</h3>
+          <p class="footer-bio">تطبيق إسلامي شامل — رفيقك الروحاني في كل لحظة من يومك</p>
+        </div>
+      </div>
+      <div class="footer-verse">
+        <p>﴿ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴾</p>
+        <span>سورة الرعد: ٢٨</span>
+      </div>
+      <div class="footer-actions">
+        <button class="footer-btn" onclick="window.open('https://github.com/Mo-Abdalkader','_blank')">
+          <span>💻</span> GitHub
+        </button>
+        <button class="footer-btn" onclick="window.open('https://www.linkedin.com/in/mo-abdalkader','_blank')">
+          <span>🔗</span> LinkedIn
+        </button>
+        <button class="footer-btn" id="viewSourceBtn">
+          <span>👁️</span> المصدر
+        </button>
+      </div>
+      <p class="footer-copy">صُنع بيد محمد عبدالقادر لوجه الله — جميع الحقوق محفوظة © 2026 م</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

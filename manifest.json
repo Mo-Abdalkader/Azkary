@@ -1,0 +1,35 @@
+{
+  "name": "أذكاري — رفيق الذاكرين",
+  "short_name": "أذكاري",
+  "description": "تطبيق الأذكار والأدعية الإسلامية — رفيقك الروحاني اليومي",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["lifestyle", "education", "religion"],
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "أذكار الصباح",
+      "short_name": "الصباح",
+      "description": "ابدأ أذكار صباحك",
+      "url": "./index.html#morning",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "المسبحة",
+      "short_name": "تسبيح",
+      "description": "فتح المسبحة الرقمية",
+      "url": "./index.html#tasbeeh",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}
