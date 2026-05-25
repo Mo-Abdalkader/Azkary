@@ -2,7 +2,7 @@
    service-worker.js — أذكاري PWA
    ============================================================ */
 
-const CACHE_NAME  = "azkar-v1.2";
+const CACHE_NAME  = "azkar-v1.3";
 const SHELL_FILES = [
   "./",
   "./index.html",

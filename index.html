@@ -9,10 +9,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="أذكاري" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/favicon.ico" sizes="16x16" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <meta property="og:image" content="assets/logo.png" />
   <title>أذكاري — رفيق الذاكرين</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;900&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="dark-mode">
@@ -39,31 +41,31 @@
   <!-- ░░░ INSTALL BANNER ░░░ -->
   <div id="installBanner" class="install-banner hidden">
     <div class="install-banner-content">
-      <span class="install-icon">📲</span>
+      <span class="install-icon"><span class="m-icon" style="font-size:1.2rem">phone_android</span></span>
       <span>ثبّت التطبيق على جهازك</span>
     </div>
     <div class="install-banner-actions">
       <button id="installBtn" class="btn-install">تثبيت</button>
-      <button id="dismissInstall" class="btn-dismiss">×</button>
+      <button id="dismissInstall" class="btn-dismiss"><span class="m-icon">close</span></button>
     </div>
   </div>
 
   <!-- ░░░ NAVBAR ░░░ -->
   <nav class="navbar" id="navbar">
     <div class="nav-brand">
-      <span class="nav-logo">📿</span>
+      <img src="assets/logo.png" alt="أذكاري" class="nav-logo-img" onerror="this.src='icon-192.svg'" />
       <span class="nav-title">أذكاري</span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="#home"      class="nav-link active" data-page="home">      🏠 الرئيسية  </a>
-      <a href="#library"   class="nav-link"         data-page="library">  📚 المكتبة   </a>
-      <a href="#tasbeeh"   class="nav-link"         data-page="tasbeeh">  📿 المسبحة   </a>
-      <a href="#dashboard" class="nav-link"         data-page="dashboard">📊 إحصائياتي </a>
-      <a href="#favorites" class="nav-link"         data-page="favorites">⭐ المفضلة   </a>
+      <a href="#home"      class="nav-link active" data-page="home">     <span class="m-icon">home</span> الرئيسية</a>
+      <a href="#library"   class="nav-link"         data-page="library"> <span class="m-icon">menu_book</span> المكتبة</a>
+      <a href="#tasbeeh"   class="nav-link"         data-page="tasbeeh"> <span class="m-icon">filter_vintage</span> المسبحة</a>
+      <a href="#dashboard" class="nav-link"         data-page="dashboard"><span class="m-icon">bar_chart</span> إحصائياتي</a>
+      <a href="#favorites" class="nav-link"         data-page="favorites"><span class="m-icon">star</span> المفضلة</a>
     </div>
     <div class="nav-actions">
-      <button id="themeToggle" class="btn-icon" title="تغيير المظهر">🌙</button>
-      <button id="searchToggle" class="btn-icon" title="بحث">🔍</button>
+      <button id="themeToggle" class="btn-icon" title="تغيير المظهر"><span class="m-icon">dark_mode</span></button>
+      <button id="searchToggle" class="btn-icon" title="بحث"><span class="m-icon">search</span></button>
       <button class="hamburger" id="hamburger">
         <span></span><span></span><span></span>
       </button>
@@ -73,15 +75,15 @@
   <!-- ░░░ MOBILE NAV DRAWER ░░░ -->
   <div class="mobile-drawer" id="mobileDrawer">
     <div class="drawer-header">
-      <span class="drawer-logo">📿 أذكاري</span>
-      <button class="drawer-close" id="drawerClose">×</button>
+      <span class="drawer-logo"><img src="assets/logo.png" alt="أذكاري" class="drawer-logo-img" onerror="this.src='icon-192.svg'" /> أذكاري</span>
+      <button class="drawer-close" id="drawerClose"><span class="m-icon">close</span></button>
     </div>
     <div class="drawer-links">
-      <a href="#home"      class="drawer-link" data-page="home">      🏠 الرئيسية  </a>
-      <a href="#library"   class="drawer-link" data-page="library">  📚 المكتبة   </a>
-      <a href="#tasbeeh"   class="drawer-link" data-page="tasbeeh">  📿 المسبحة   </a>
-      <a href="#dashboard" class="drawer-link" data-page="dashboard">📊 إحصائياتي </a>
-      <a href="#favorites" class="drawer-link" data-page="favorites">⭐ المفضلة   </a>
+      <a href="#home"      class="drawer-link" data-page="home">     <span class="m-icon">home</span> الرئيسية</a>
+      <a href="#library"   class="drawer-link" data-page="library"> <span class="m-icon">menu_book</span> المكتبة</a>
+      <a href="#tasbeeh"   class="drawer-link" data-page="tasbeeh"> <span class="m-icon">filter_vintage</span> المسبحة</a>
+      <a href="#dashboard" class="drawer-link" data-page="dashboard"><span class="m-icon">bar_chart</span> إحصائياتي</a>
+      <a href="#favorites" class="drawer-link" data-page="favorites"><span class="m-icon">star</span> المفضلة</a>
     </div>
     <div class="drawer-footer">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
   </div>
@@ -91,7 +93,7 @@
   <div class="search-overlay" id="searchOverlay">
     <div class="search-box">
       <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن دعاء أو ذكر…" autocomplete="off" />
-      <button id="searchClose" class="search-close">×</button>
+      <button id="searchClose" class="search-close"><span class="m-icon">close</span></button>
     </div>
     <div id="searchResults" class="search-results"></div>
   </div>
@@ -137,37 +139,62 @@
 
       <!-- QUICK ACCESS GRID -->
       <div class="section-wrap">
-        <h2 class="section-title reveal">⚡ وصول سريع</h2>
+        <h2 class="section-title reveal"><span class="m-icon" style="font-size:1.3rem">bolt</span> وصول سريع</h2>
         <div class="quick-grid reveal">
           <button class="quick-card" data-goto="morning">
-            <span class="qc-icon">🌅</span>
+            <span class="qc-icon m-icon">wb_sunny</span>
             <span class="qc-label">أذكار الصباح</span>
             <span class="qc-count" id="qc-morning"></span>
           </button>
           <button class="quick-card" data-goto="evening">
-            <span class="qc-icon">🌙</span>
+            <span class="qc-icon m-icon">nights_stay</span>
             <span class="qc-label">أذكار المساء</span>
             <span class="qc-count" id="qc-evening"></span>
           </button>
           <button class="quick-card" data-goto="sleep">
-            <span class="qc-icon">🌌</span>
+            <span class="qc-icon m-icon">bedtime</span>
             <span class="qc-label">أذكار النوم</span>
             <span class="qc-count" id="qc-sleep"></span>
           </button>
           <button class="quick-card" data-goto="after_prayer">
-            <span class="qc-icon">🕌</span>
+            <span class="qc-icon m-icon">mosque</span>
             <span class="qc-label">بعد الصلاة</span>
             <span class="qc-count" id="qc-after_prayer"></span>
           </button>
           <button class="quick-card" data-goto="quranic_duas">
-            <span class="qc-icon">📗</span>
+            <span class="qc-icon m-icon">book</span>
             <span class="qc-label">أدعية قرآنية</span>
             <span class="qc-count" id="qc-quranic_duas"></span>
           </button>
           <button class="quick-card" data-goto="tasbeeh" data-page="tasbeeh">
-            <span class="qc-icon">📿</span>
+            <span class="qc-icon m-icon">filter_vintage</span>
             <span class="qc-label">المسبحة الرقمية</span>
             <span class="qc-count">∞</span>
+          </button>
+          <button class="quick-card" data-goto="food">
+            <span class="qc-icon m-icon">restaurant</span>
+            <span class="qc-label">أذكار الطعام</span>
+            <span class="qc-count" id="qc-food"></span>
+          </button>
+          <button class="quick-card" data-goto="wudu">
+            <span class="qc-icon m-icon">water_drop</span>
+            <span class="qc-label">أذكار الوضوء</span>
+            <span class="qc-count" id="qc-wudu"></span>
+          </button>
+          <button class="quick-card" data-goto="mosque">
+            <span class="qc-icon m-icon">mosque</span>
+            <span class="qc-label">أذكار المسجد</span>
+            <span class="qc-count" id="qc-mosque"></span>
+          </button>
+          <button class="quick-card" data-goto="prophets">
+            <span class="qc-icon m-icon">auto_awesome</span>
+            <span class="qc-label">أدعية الأنبياء</span>
+            <span class="qc-count" id="qc-prophets"></span>
+          </button>
+          <button class="quick-card" data-goto="study">
+            <span class="qc-icon m-icon">school</span>
+            <span class="qc-label">الدراسة والامتحانات</span>
+            <span class="qc-count" id="qc-study"></span>
           </button>
         </div>
       </div>
@@ -175,7 +202,7 @@
       <!-- DAILY REMINDER -->
       <div class="section-wrap reveal">
         <div class="daily-reminder" id="dailyReminder">
-          <div class="reminder-badge">💡 تذكير اليوم</div>
+          <div class="reminder-badge"><span class="m-icon" style="font-size:.9rem;vertical-align:middle">lightbulb</span> تذكير اليوم</div>
           <p class="reminder-arabic" id="reminderArabic"></p>
           <p class="reminder-source" id="reminderSource"></p>
           <p class="reminder-note" id="reminderNote"></p>
@@ -184,64 +211,97 @@
 
       <!-- STATS PREVIEW -->
       <div class="section-wrap reveal">
-        <h2 class="section-title">📊 ملخص عبادتي</h2>
+        <h2 class="section-title"><span class="m-icon" style="font-size:1.3rem">bar_chart</span> ملخص عبادتي</h2>
         <div class="stats-mini">
           <div class="stat-mini-card">
-            <span class="stat-mini-icon">📿</span>
+            <span class="stat-mini-icon m-icon">filter_vintage</span>
             <span class="stat-mini-val" id="miniTotal">0</span>
             <span class="stat-mini-label">إجمالي التسبيح</span>
           </div>
           <div class="stat-mini-card">
-            <span class="stat-mini-icon">🔥</span>
+            <span class="stat-mini-icon m-icon">local_fire_department</span>
             <span class="stat-mini-val" id="miniStreak">0</span>
             <span class="stat-mini-label">أيام متتالية</span>
           </div>
           <div class="stat-mini-card">
-            <span class="stat-mini-icon">⭐</span>
+            <span class="stat-mini-icon m-icon">star</span>
             <span class="stat-mini-val" id="miniFavs">0</span>
             <span class="stat-mini-label">المفضلة</span>
           </div>
           <div class="stat-mini-card">
-            <span class="stat-mini-icon">🌙</span>
+            <span class="stat-mini-icon m-icon">nights_stay</span>
             <span class="stat-mini-val" id="miniToday">0</span>
             <span class="stat-mini-label">تسبيح اليوم</span>
           </div>
         </div>
       </div>
 
+      <!-- DEVELOPER / ABOUT — home page only -->
+      <section class="developer-section" id="about">
+        <div class="developer-card">
+          <div class="developer-avatar">
+            <img src="assets/developer.png" alt="محمد عبدالقادر" class="developer-photo"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span class="developer-initials">م.ع</span>
+          </div>
+          <div class="developer-info">
+            <span class="developer-tag">بصمته</span>
+            <h3 class="developer-name">محمد عبدالقادر</h3>
+            <p class="developer-bio">
+              مهندس ذكاء اصطناعي — أعمل في مجالات <span class="tech">LLMs</span> و <span class="tech">RAG</span> ومعالجة اللغات الطبيعية <span class="tech">NLP</span> والتصوير الطبي بالذكاء الاصطناعي.
+              هذا التطبيق وُلد كفكرة ليكون رفيقاً روحانياً يومياً يجمع بين أصالة الذكر وحداثة التقنية.
+            </p>
+            <div class="developer-links">
+              <a href="https://github.com/Mo-Abdalkader/Azkary" target="_blank" class="dev-link dev-link--source">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Source Code
+              </a>
+              <a href="https://github.com/Mo-Abdalkader" target="_blank" class="dev-link dev-link--github">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub
+              </a>
+              <a href="https://www.linkedin.com/in/mo-abdalkader" target="_blank" class="dev-link dev-link--linkedin">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                LinkedIn
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </section>
 
     <!-- ════════════════ PAGE: LIBRARY ════════════════ -->
     <section class="page" id="page-library">
       <div class="library-header">
-        <h1 class="library-title">📚 مكتبة الأذكار والأدعية</h1>
-        <p class="library-subtitle">اختر فئة للاستعراض</p>
+        <h1 class="library-title"><span class="m-icon" style="font-size:1.5rem;vertical-align:middle">menu_book</span> مكتبة الأذكار والأدعية</h1>
       </div>
 
-      <!-- FILTER TABS -->
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="all">الكل</button>
-        <button class="filter-tab" data-filter="azkar">الأذكار</button>
-        <button class="filter-tab" data-filter="duas">الأدعية</button>
-      </div>
-
-      <!-- CATEGORY GRID -->
-      <div class="category-grid" id="categoryGrid"></div>
-
-      <!-- DUA LIST VIEW -->
-      <div class="dua-list-view hidden" id="duaListView">
-        <div class="dua-list-header">
-          <button class="btn-back" id="backToCategories">← رجوع</button>
-          <h2 class="dua-list-title" id="duaListTitle"></h2>
+      <!-- Filter bar -->
+      <div class="lib-filter-bar">
+        <div class="lib-filter-row">
+          <button class="lib-grp-btn active" data-group="all"><span class="m-icon sm">select_all</span> الكل</button>
+          <button class="lib-grp-btn" data-group="azkar"><span class="m-icon sm">wb_sunny</span> أذكار</button>
+          <button class="lib-grp-btn" data-group="duas"><span class="m-icon sm">book</span> أدعية</button>
+          <button id="libToggleCats" class="lib-cat-toggle" title="تصفية حسب الفئة">
+            <span class="m-icon sm">filter_list</span>
+            <span class="lib-toggle-arrow">▲</span>
+          </button>
+          <button id="libResetFilter" class="lib-reset-btn" title="إعادة تعيين">
+            <span class="m-icon sm">restart_alt</span>
+          </button>
         </div>
-        <div class="dua-cards" id="duaCards"></div>
+        <div class="lib-cat-panel hidden" id="libCatPanel"></div>
       </div>
+
+      <!-- DUA CARDS -->
+      <div class="dua-cards" id="duaCards"></div>
     </section>
 
     <!-- ════════════════ PAGE: TASBEEH ════════════════ -->
     <section class="page" id="page-tasbeeh">
       <div class="tasbeeh-page">
-        <h1 class="tasbeeh-title">📿 المسبحة الرقمية</h1>
+        <h1 class="tasbeeh-title"><span class="m-icon" style="font-size:1.5rem;vertical-align:middle;color:var(--gold)">filter_vintage</span> المسبحة الرقمية</h1>
 
         <!-- Selector -->
         <div class="tasbeeh-selector">
@@ -270,15 +330,14 @@
             </div>
           </div>
           <p class="tasbeeh-arabic" id="tasbeehArabic">سُبْحَانَ اللَّهِ</p>
-          <p class="tasbeeh-translation" id="tasbeehTranslation">سبحان الله</p>
           <div class="tasbeeh-tap-hint">اضغط على الدائرة للعدّ</div>
         </div>
 
         <!-- Controls -->
         <div class="tasbeeh-controls">
-          <button class="tc-btn danger" id="resetBtn">↺ إعادة</button>
-          <button class="tc-btn primary" id="undoBtn">↩ تراجع</button>
-          <button class="tc-btn muted" id="soundToggle">🔊 صوت</button>
+          <button class="tc-btn danger" id="resetBtn"><span class="m-icon" style="font-size:1.1rem">restart_alt</span> إعادة</button>
+          <button class="tc-btn primary" id="undoBtn"><span class="m-icon" style="font-size:1.1rem">undo</span> تراجع</button>
+          <button class="tc-btn muted" id="soundToggle"><span class="m-icon" style="font-size:1.1rem">volume_up</span> صوت</button>
         </div>
 
         <!-- Session Stats -->
@@ -291,7 +350,7 @@
 
         <!-- Weekly Chart -->
         <div class="section-wrap">
-          <h3 class="section-title">📈 نشاط الأسبوع</h3>
+          <h3 class="section-title"><span class="m-icon">trending_up</span> نشاط الأسبوع</h3>
           <div class="weekly-chart" id="weeklyChart"></div>
         </div>
       </div>
@@ -300,46 +359,46 @@
     <!-- ════════════════ PAGE: DASHBOARD ════════════════ -->
     <section class="page" id="page-dashboard">
       <div class="dashboard-page">
-        <h1 class="dashboard-title">📊 إحصائياتي</h1>
+        <h1 class="dashboard-title"><span class="m-icon" style="font-size:1.5rem;vertical-align:middle">bar_chart</span> إحصائياتي</h1>
 
         <div class="dash-grid">
           <div class="dash-card accent-green">
-            <div class="dash-icon">📿</div>
+            <div class="dash-icon"><span class="m-icon">filter_vintage</span></div>
             <div class="dash-info">
               <span class="dash-val" id="dashTotal">٠</span>
               <span class="dash-label">إجمالي التسبيح</span>
             </div>
           </div>
           <div class="dash-card accent-gold">
-            <div class="dash-icon">🌙</div>
+            <div class="dash-icon"><span class="m-icon">nights_stay</span></div>
             <div class="dash-info">
               <span class="dash-val" id="dashToday">٠</span>
               <span class="dash-label">تسبيح اليوم</span>
             </div>
           </div>
           <div class="dash-card accent-purple">
-            <div class="dash-icon">🔥</div>
+            <div class="dash-icon"><span class="m-icon">local_fire_department</span></div>
             <div class="dash-info">
               <span class="dash-val" id="dashStreak">٠</span>
               <span class="dash-label">أيام متتالية</span>
             </div>
           </div>
           <div class="dash-card accent-cyan">
-            <div class="dash-icon">⭐</div>
+            <div class="dash-icon"><span class="m-icon">star</span></div>
             <div class="dash-info">
               <span class="dash-val" id="dashFavs">٠</span>
               <span class="dash-label">المفضلة</span>
             </div>
           </div>
           <div class="dash-card accent-red">
-            <div class="dash-icon">🏆</div>
+            <div class="dash-icon"><span class="m-icon">emoji_events</span></div>
             <div class="dash-info">
               <span class="dash-val" id="dashBest">٠</span>
               <span class="dash-label">أفضل يوم</span>
             </div>
           </div>
           <div class="dash-card accent-teal">
-            <div class="dash-icon">📖</div>
+            <div class="dash-icon"><span class="m-icon">book</span></div>
             <div class="dash-info">
               <span class="dash-val" id="dashViewed">٠</span>
               <span class="dash-label">أدعية شُوهدت</span>
@@ -354,7 +413,7 @@
 
         <!-- Top Tasbeeh -->
         <div class="section-wrap reveal">
-          <h3 class="section-title">🏅 أكثر ما سبّحت</h3>
+          <h3 class="section-title"><span class="m-icon">military_tech</span> أكثر ما سبّحت</h3>
           <div id="topTasbeeh" class="top-tasbeeh-list"></div>
         </div>
       </div>
@@ -363,64 +422,41 @@
     <!-- ════════════════ PAGE: FAVORITES ════════════════ -->
     <section class="page" id="page-favorites">
       <div class="section-wrap">
-        <h1 class="library-title">⭐ المفضلة</h1>
+        <h1 class="library-title"><span class="m-icon" style="font-size:1.5rem;vertical-align:middle">star</span> المفضلة</h1>
         <p class="library-subtitle" id="favSubtitle">أدعيتك وأذكارك المفضلة</p>
         <div class="dua-cards" id="favCards"></div>
         <div class="empty-state hidden" id="favEmpty">
-          <div class="empty-icon">⭐</div>
+          <div class="empty-icon"><span class="m-icon lg" style="color:var(--gold)">star</span></div>
           <p>لم تضف شيئاً للمفضلة بعد</p>
-          <p class="empty-hint">اضغط على ⭐ في أي دعاء لإضافته هنا</p>
+          <p class="empty-hint"><span class="m-icon" style="font-size:.95rem">star</span> اضغط على أيقونة النجمة في أي دعاء لإضافته هنا</p>
         </div>
       </div>
     </section>
+
+    <!-- ░░░ PAGE FOOTER (shown on non-home pages) ░░░ -->
+    <footer class="page-footer hidden" id="pageFooter">
+      <span class="m-icon sm" style="color:var(--gold);vertical-align:middle">filter_vintage</span>
+      <span>أذكاري — تطبيق الأذكار والأدعية الإسلامية</span>
+      <span class="footer-dot">·</span>
+      <span dir="ltr">© 2026</span>
+    </footer>
 
   </main>
 
   <!-- ░░░ BOTTOM MOBILE NAV ░░░ -->
   <nav class="bottom-nav" id="bottomNav">
-    <button class="bn-item active" data-page="home">      <span>🏠</span><span>الرئيسية</span>  </button>
-    <button class="bn-item"        data-page="library">   <span>📚</span><span>المكتبة</span>   </button>
-    <button class="bn-item"        data-page="tasbeeh">   <span>📿</span><span>المسبحة</span>   </button>
-    <button class="bn-item"        data-page="dashboard"> <span>📊</span><span>إحصائياتي</span> </button>
-    <button class="bn-item"        data-page="favorites"> <span>⭐</span><span>المفضلة</span>   </button>
+    <button class="bn-item active" data-page="home">     <span class="m-icon">home</span><span>الرئيسية</span></button>
+    <button class="bn-item"        data-page="library"> <span class="m-icon">menu_book</span><span>المكتبة</span></button>
+    <button class="bn-item"        data-page="tasbeeh"> <span class="m-icon">filter_vintage</span><span>المسبحة</span></button>
+    <button class="bn-item"        data-page="dashboard"><span class="m-icon">bar_chart</span><span>إحصائياتي</span></button>
+    <button class="bn-item"        data-page="favorites"><span class="m-icon">star</span><span>المفضلة</span></button>
   </nav>
 
   <!-- ░░░ BACK TO TOP ░░░ -->
-  <button class="back-to-top hidden" id="backToTop" title="للأعلى">↑</button>
+  <button class="back-to-top hidden" id="backToTop" title="للأعلى"><span class="m-icon">arrow_upward</span></button>
 
   <!-- ░░░ TOAST ░░░ -->
   <div class="toast" id="toast"></div>
-
-  <!-- ░░░ FOOTER ░░░ -->
-  <footer class="footer" id="footer">
-    <div class="footer-card">
-      <div class="footer-top">
-        <div class="footer-avatar">
-          <div class="avatar-circle">🌙</div>
-        </div>
-        <div class="footer-info">
-          <h3 class="footer-name">أذكاري</h3>
-          <p class="footer-bio">تطبيق إسلامي شامل — رفيقك الروحاني في كل لحظة من يومك</p>
-        </div>
-      </div>
-      <div class="footer-verse">
-        <p>﴿ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴾</p>
-        <span>سورة الرعد: ٢٨</span>
-      </div>
-      <div class="footer-actions">
-        <button class="footer-btn" onclick="window.open('https://github.com/Mo-Abdalkader','_blank')">
-          <span>💻</span> GitHub
-        </button>
-        <button class="footer-btn" onclick="window.open('https://www.linkedin.com/in/mo-abdalkader','_blank')">
-          <span>🔗</span> LinkedIn
-        </button>
-        <button class="footer-btn" id="viewSourceBtn">
-          <span>👁️</span> المصدر
-        </button>
-      </div>
-      <p class="footer-copy">صُنع بيد محمد عبدالقادر لوجه الله — جميع الحقوق محفوظة © 2026 م</p>
-    </div>
-  </footer>
 
   <script src="data.js"></script>
   <script src="app.js"></script>

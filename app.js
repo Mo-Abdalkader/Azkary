@@ -131,7 +131,7 @@ function initQuote() {
     idx++;
   }
   showQuote();
-  setInterval(showQuote, 8000);
+  setInterval(showQuote, 12000);
   const qAr = document.getElementById("quoteArabic");
   if(qAr) qAr.style.transition = "opacity .4s";
 }
@@ -150,57 +150,32 @@ function initReminder() {
 
 // ── NAVIGATION ──
 function initNavigation() {
-  // Desktop nav links
-  document.querySelectorAll(".nav-link").forEach(el => {
+  document.querySelectorAll(".nav-link, .bn-item, .drawer-link").forEach(el => {
     el.addEventListener("click", e => {
-      e.preventDefault();
+      if(el.classList.contains("nav-link") || el.classList.contains("drawer-link")) e.preventDefault();
       const p = el.dataset.page;
+      if(el.classList.contains("drawer-link")) closeDrawer();
       navigateTo(p);
-      setNavActive(p, ".nav-link");
-    });
-  });
-  // Bottom nav
-  document.querySelectorAll(".bn-item").forEach(el => {
-    el.addEventListener("touchstart", () => {}, {passive:true});
-    el.addEventListener("click", () => {
-      const p = el.dataset.page;
-      navigateTo(p);
-      setNavActive(p, ".bn-item");
-      setNavActive(p, ".nav-link");
-    });
-  });
-  // Drawer links
-  document.querySelectorAll(".drawer-link").forEach(el => {
-    el.addEventListener("click", e => {
-      e.preventDefault();
-      const p = el.dataset.page;
-      closeDrawer();
-      navigateTo(p);
-      setNavActive(p, ".nav-link");
-      setNavActive(p, ".bn-item");
     });
   });
 }
 
 function navigateTo(page) {
-  // hide all
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   const target = document.getElementById("page-"+page);
-  if(target) {
-    target.classList.add("active");
-    window.scrollTo(0,0);
-  }
+  if(target) { target.classList.add("active"); window.scrollTo(0,0); }
   STATE.currentPage = page;
   setNavActive(page, ".nav-link");
   setNavActive(page, ".bn-item");
 
   if(page === "favorites") renderFavorites();
   if(page === "dashboard") updateDashboard();
-  if(page === "library") {
-    renderCategoryGrid("all");
-    showCategoryList();
-  }
-  if(page === "tasbeeh") refreshTasbeehUI();
+  if(page === "library")    renderLibrary();
+  if(page === "tasbeeh")    refreshTasbeehUI();
+
+  // page footer: show on non-home pages
+  const pf = document.getElementById("pageFooter");
+  if(pf) pf.classList.toggle("hidden", page === "home");
 }
 
 function setNavActive(page, selector) {
@@ -227,7 +202,7 @@ function applyTheme() {
 }
 function updateThemeBtn() {
   const btn = document.getElementById("themeToggle");
-  if(btn) btn.textContent = STATE.theme === "dark-mode" ? "🌙" : "☀️";
+  if(btn) btn.innerHTML = STATE.theme === "dark-mode" ? '<span class="m-icon">dark_mode</span>' : '<span class="m-icon">light_mode</span>';
 }
 
 // ── DRAWER ──
@@ -269,11 +244,8 @@ function doSearch(q) {
   function searchGroup(group, groupKey) {
     Object.entries(group).forEach(([catKey, items]) => {
       items.forEach(item => {
-        if(
-          item.arabic.includes(q) ||
-          item.title.toLowerCase().includes(q) ||
-          (item.translation && item.translation.toLowerCase().includes(q))
-        ) hits.push({ ...item, _group:groupKey, _cat:catKey });
+        const searchable = `${item.arabic} ${item.title} ${item.benefits || ""} ${item.source || ""}`;
+        if(searchable.toLowerCase().includes(q)) hits.push({ ...item, _group:groupKey, _cat:catKey });
       });
     });
   }
@@ -284,7 +256,7 @@ function doSearch(q) {
     return;
   }
   res.innerHTML = hits.slice(0,20).map(item => `
-    <div class="search-card" data-group="${item._group}" data-cat="${item._cat}">
+    <div class="search-card" data-group="${item._group}" data-cat="${item._cat}" data-id="${item.id}">
       <div class="search-card-title">${getCatLabel(item._group, item._cat)} — ${item.title}</div>
       <div class="search-card-arabic">${item.arabic.substring(0,80)}…</div>
     </div>
@@ -294,7 +266,7 @@ function doSearch(q) {
       document.getElementById("searchOverlay")?.classList.remove("visible");
       document.getElementById("searchInput").value = "";
       clearSearchResults();
-      openCategory(card.dataset.group, card.dataset.cat);
+      openCategory(card.dataset.group, card.dataset.cat, card.dataset.id);
     });
   });
 }
@@ -309,11 +281,16 @@ function getCatLabel(group, cat) {
 // ── QUICK GRID ──
 function initQuickGrid() {
   const countEls = {
-    morning:     ISLAMIC_DATA.azkar.morning.length,
-    evening:     ISLAMIC_DATA.azkar.evening.length,
-    sleep:       ISLAMIC_DATA.azkar.sleep.length,
-    after_prayer:ISLAMIC_DATA.azkar.after_prayer.length,
-    quranic_duas:ISLAMIC_DATA.duas.quranic_duas.length,
+    morning:      ISLAMIC_DATA.azkar.morning.length,
+    evening:      ISLAMIC_DATA.azkar.evening.length,
+    sleep:        ISLAMIC_DATA.azkar.sleep.length,
+    after_prayer: ISLAMIC_DATA.azkar.after_prayer.length,
+    quranic_duas: ISLAMIC_DATA.duas.quranic_duas.length,
+    food:         ISLAMIC_DATA.azkar.food.length,
+    wudu:         ISLAMIC_DATA.azkar.wudu.length,
+    mosque:       ISLAMIC_DATA.azkar.mosque.length,
+    prophets:     ISLAMIC_DATA.duas.prophets.length,
+    study:        ISLAMIC_DATA.duas.study.length,
   };
   Object.entries(countEls).forEach(([k,v]) => {
     const el = document.getElementById("qc-"+k);
@@ -335,66 +312,116 @@ function findGroup(cat) {
 }
 
 // ── LIBRARY ──
+const LIB_STATE = { group:"all", cats:new Set(), panelOpen:false };
+
 function initLibrary() {
-  document.getElementById("backToCategories")?.addEventListener("click", showCategoryList);
-  document.querySelectorAll(".filter-tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      renderCategoryGrid(tab.dataset.filter);
+  document.querySelectorAll(".lib-grp-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".lib-grp-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      LIB_STATE.group = btn.dataset.group;
+      LIB_STATE.cats.clear();
+      document.querySelectorAll(".lib-cat-chip").forEach(c => c.classList.remove("checked"));
+      renderLibrary();
+    });
+  });
+  document.getElementById("libToggleCats")?.addEventListener("click", toggleLibPanel);
+  document.getElementById("libResetFilter")?.addEventListener("click", resetLibFilter);
+  buildLibCatPanel();
+}
+
+function buildLibCatPanel() {
+  const panel = document.getElementById("libCatPanel");
+  if(!panel) return;
+  let html = "";
+  function addGroup(group, gKey, label) {
+    const entries = Object.entries(group);
+    if(!entries.length) return;
+    html += `<div class="lib-cat-divider"><span class="m-icon sm">${gKey === "azkar" ? "wb_sunny" : "book"}</span> ${label}</div>`;
+    entries.forEach(([key]) => {
+      const m = CATEGORY_META[gKey]?.[key] || { label:key, icon:"✦" };
+      html += `<button class="lib-cat-chip" data-cat="${key}">${m.icon} ${m.label}</button>`;
+    });
+  }
+  addGroup(ISLAMIC_DATA.azkar, "azkar", "الأذكار");
+  addGroup(ISLAMIC_DATA.duas,  "duas",  "الأدعية");
+  panel.innerHTML = html;
+  panel.querySelectorAll(".lib-cat-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const cat = chip.dataset.cat;
+      LIB_STATE.cats.has(cat) ? LIB_STATE.cats.delete(cat) : LIB_STATE.cats.add(cat);
+      chip.classList.toggle("checked");
+      renderLibrary();
     });
   });
 }
-function renderCategoryGrid(filter = "all") {
-  const grid = document.getElementById("categoryGrid");
-  if(!grid) return;
-  grid.innerHTML = "";
-  function renderGroup(groupData, groupKey) {
-    Object.entries(groupData).forEach(([catKey, items]) => {
-      const meta = CATEGORY_META[groupKey]?.[catKey] || { label:catKey, icon:"📿", color:"#10b981" };
-      const card = document.createElement("button");
-      card.className = "cat-card";
-      card.style.setProperty("--accent-color", meta.color);
-      card.innerHTML = `
-        <span class="cat-icon">${meta.icon}</span>
-        <span class="cat-label">${meta.label}</span>
-        <span class="cat-count">${toArabicNum(items.length)} عنصر</span>
-        <span class="cat-type">${groupKey === "azkar" ? "أذكار" : "أدعية"}</span>
-      `;
-      card.addEventListener("click", () => openCategory(groupKey, catKey));
-      grid.appendChild(card);
-    });
-  }
-  if(filter === "all" || filter === "azkar") renderGroup(ISLAMIC_DATA.azkar, "azkar");
-  if(filter === "all" || filter === "duas")  renderGroup(ISLAMIC_DATA.duas,  "duas");
+
+function toggleLibPanel() {
+  const p = document.getElementById("libCatPanel");
+  if(!p) return;
+  p.classList.toggle("hidden");
+  LIB_STATE.panelOpen = !p.classList.contains("hidden");
+  document.getElementById("libToggleCats")?.classList.toggle("active", LIB_STATE.panelOpen);
+  const a = document.querySelector(".lib-toggle-arrow");
+  if(a) a.textContent = LIB_STATE.panelOpen ? "▼" : "▲";
 }
 
-function openCategory(group, cat) {
-  navigateTo("library");
-  STATE.currentCat = { group, cat };
-  const items = ISLAMIC_DATA[group]?.[cat] || [];
-  const meta  = CATEGORY_META[group]?.[cat] || { label:cat, icon:"📿" };
+function resetLibFilter() {
+  LIB_STATE.group = "all"; LIB_STATE.cats.clear(); LIB_STATE.panelOpen = false;
+  document.querySelectorAll(".lib-grp-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector('.lib-grp-btn[data-group="all"]')?.classList.add("active");
+  document.querySelectorAll(".lib-cat-chip").forEach(c => c.classList.remove("checked"));
+  const p = document.getElementById("libCatPanel");
+  if(p) p.classList.add("hidden");
+  document.getElementById("libToggleCats")?.classList.remove("active");
+  const a = document.querySelector(".lib-toggle-arrow");
+  if(a) a.textContent = "▲";
+  renderLibrary();
+}
 
-  document.getElementById("categoryGrid")?.classList.add("hidden") ||
-    (document.getElementById("categoryGrid").style.display = "none");
-  document.querySelector(".filter-tabs")?.style && (document.querySelector(".filter-tabs").style.display = "none");
-
-  const listView = document.getElementById("duaListView");
-  const titleEl  = document.getElementById("duaListTitle");
-  if(listView) { listView.classList.remove("hidden"); listView.style.display = ""; }
-  if(titleEl)  titleEl.textContent = `${meta.icon} ${meta.label}`;
-
+function renderLibrary() {
+  const container = document.getElementById("duaCards");
+  if(!container) return;
+  let items = [];
+  function collect(group, gKey) {
+    Object.entries(group).forEach(([key, vals]) => {
+      if(LIB_STATE.cats.size > 0 && !LIB_STATE.cats.has(key)) return;
+      vals.forEach(v => items.push({...v, _group:gKey, _cat:key}));
+    });
+  }
+  if(LIB_STATE.group === "all" || LIB_STATE.group === "azkar") collect(ISLAMIC_DATA.azkar, "azkar");
+  if(LIB_STATE.group === "all" || LIB_STATE.group === "duas")  collect(ISLAMIC_DATA.duas,  "duas");
+  if(!items.length) {
+    container.innerHTML = '<p style="color:var(--text3);text-align:center;padding:2rem">لا توجد نتائج</p>';
+    return;
+  }
   renderDuaCards(items);
 }
 
-function showCategoryList() {
-  const catGrid   = document.getElementById("categoryGrid");
-  const filterTab = document.querySelector(".filter-tabs");
-  const listView  = document.getElementById("duaListView");
-  if(catGrid)   { catGrid.style.display = ""; catGrid.classList.remove("hidden"); }
-  if(filterTab) filterTab.style.display = "";
-  if(listView)  listView.classList.add("hidden");
-  STATE.currentCat = null;
+function openCategory(group, cat, itemId) {
+  navigateTo("library");
+  LIB_STATE.group = group;
+  LIB_STATE.cats = new Set([cat]);
+  LIB_STATE.panelOpen = false;
+  document.querySelectorAll(".lib-grp-btn").forEach(b => b.classList.toggle("active", b.dataset.group === group));
+  document.querySelectorAll(".lib-cat-chip").forEach(c => c.classList.toggle("checked", c.dataset.cat === cat));
+  const p = document.getElementById("libCatPanel");
+  if(p) p.classList.add("hidden");
+  document.getElementById("libToggleCats")?.classList.remove("active");
+  const a = document.querySelector(".lib-toggle-arrow");
+  if(a) a.textContent = "▲";
+  renderLibrary();
+
+  if(itemId) {
+    setTimeout(() => {
+      const card = document.querySelector(`.dua-card[data-id="${itemId}"]`);
+      if(card) {
+        card.scrollIntoView({ behavior:"smooth", block:"center" });
+        card.classList.add("dua-card--highlight");
+        setTimeout(() => card.classList.remove("dua-card--highlight"), 2500);
+      }
+    }, 400);
+  }
 }
 
 function renderDuaCards(items) {
@@ -414,29 +441,27 @@ function renderDuaCards(items) {
 function buildDuaCard(item, idx) {
   const isFav = STATE.favorites.has(item.id);
   return `
-  <div class="dua-card" style="animation-delay:${idx*60}ms">
+  <div class="dua-card" data-id="${item.id}" style="animation-delay:${idx*60}ms">
     <div class="dua-card-header">
       <span class="dua-card-title">${item.title}</span>
       <div class="dua-card-actions">
-        <button class="btn-fav ${isFav?"active":""}" data-id="${item.id}" title="مفضلة">${isFav?"⭐":"☆"}</button>
-        <button class="btn-copy" data-id="${item.id}" title="نسخ">📋</button>
+        <button class="btn-fav ${isFav?"active":""}" data-id="${item.id}" title="مفضلة">${isFav?'<span class="m-icon fill" style="font-size:1.2rem">star</span>':'<span class="m-icon" style="font-size:1.2rem">star</span>'}</button>
+        <button class="btn-copy" data-id="${item.id}" title="نسخ"><span class="m-icon" style="font-size:1.2rem">content_copy</span></button>
       </div>
     </div>
     <div class="dua-card-body">
       <p class="dua-arabic">${item.arabic}</p>
-      <div class="dua-meta">
-      </div>
+
     </div>
     <div class="dua-footer">
-      ${item.source  ? `<span class="dua-source">📖 ${item.source}</span>` : ""}
+      ${item.source  ? `<span class="dua-source"><span class="m-icon" style="font-size:.85rem;vertical-align:middle;margin-inline-end:4px">book</span> ${item.source}</span>` : ""}
       ${item.repeat  ? `<span class="dua-repeat">× ${toArabicNum(item.repeat)}</span>` : ""}
-      ${item.benefits? `<span class="dua-benefits">💡 ${item.benefits}</span>` : ""}
+      ${item.benefits? `<span class="dua-benefits"><span class="m-icon" style="font-size:.85rem;vertical-align:middle;margin-inline-end:4px">lightbulb</span> ${item.benefits}</span>` : ""}
     </div>
   </div>`;
 }
 
-// ${item.transliteration ? `<p class="dua-transliteration">${item.transliteration}</p>` : ""}
-// ${item.translation     ? `<p class="dua-translation">${item.translation}</p>` : ""}
+
 
 
 
@@ -456,12 +481,12 @@ function findDuaById(id) {
 function toggleFav(id, btn) {
   if(STATE.favorites.has(id)) {
     STATE.favorites.delete(id);
-    if(btn) { btn.textContent="☆"; btn.classList.remove("active"); }
-    showToast("أُزيل من المفضلة");
-  } else {
-    STATE.favorites.add(id);
-    if(btn) { btn.textContent="⭐"; btn.classList.add("active"); }
-    showToast("✅ أُضيف إلى المفضلة");
+      if(btn) { btn.innerHTML='<span class="m-icon" style="font-size:1.2rem">star</span>'; btn.classList.remove("active"); }
+      showToast("أُزيل من المفضلة");
+    } else {
+      STATE.favorites.add(id);
+      if(btn) { btn.innerHTML='<span class="m-icon fill" style="font-size:1.2rem">star</span>'; btn.classList.add("active"); }
+      showToast("أُضيف إلى المفضلة");
   }
   save("favorites", [...STATE.favorites]);
   updateMiniStats();
@@ -499,8 +524,8 @@ function renderFavorites() {
 function copyDua(id) {
   const item = findDuaById(id);
   if(!item) return;
-  const text = `${item.title}\n\n${item.arabic}\n\n${item.translation || ""}\n\n${item.source || ""}`;
-  navigator.clipboard?.writeText(text).then(() => showToast("📋 تم النسخ")).catch(() => showToast("تعذّر النسخ"));
+  const text = `${item.title}\n\n${item.arabic}\n\n${item.benefits ? "✦ "+item.benefits+"\n\n" : ""}${item.source ? "✦ "+item.source : ""}`;
+  navigator.clipboard?.writeText(text).then(() => showToast("تم النسخ")).catch(() => showToast("تعذّر النسخ"));
 }
 
 // ── TASBEEH ──
@@ -564,10 +589,8 @@ function setTasbeeh(idx) {
   const opt = TASBEEH_OPTIONS[idx];
   document.querySelectorAll(".selector-btn").forEach((b,i) => b.classList.toggle("active", i===idx));
   const arEl = document.getElementById("tasbeehArabic");
-  const trEl = document.getElementById("tasbeehTranslation");
   const tgEl = document.getElementById("tasbeehTarget");
   if(arEl) arEl.textContent = opt.arabic;
-  if(trEl) trEl.textContent = opt.translation;
   if(tgEl) tgEl.textContent = "/ "+toArabicNum(opt.target);
   updateRing(0, opt.target);
   updateCountDisplay();
@@ -601,7 +624,7 @@ function resetTasbeeh() {
   STATE.tasbeehCurrent = 0;
   updateCountDisplay();
   updateRing(0, TASBEEH_OPTIONS[STATE.tasbeehSelected].target);
-  showToast("↺ تمت إعادة التعيين");
+  showToast("تمت إعادة التعيين");
 }
 
 function undoTasbeeh() {
@@ -662,8 +685,8 @@ function vibrateDevice() {
 function toggleSound() {
   STATE.soundOn = !STATE.soundOn;
   const btn = document.getElementById("soundToggle");
-  if(btn) btn.textContent = STATE.soundOn ? "🔊 صوت" : "🔇 صامت";
-  showToast(STATE.soundOn ? "🔊 الصوت مفعّل" : "🔇 الصوت معطّل");
+  if(btn) btn.innerHTML = STATE.soundOn ? '<span class="m-icon" style="font-size:1.1rem">volume_up</span> صوت' : '<span class="m-icon" style="font-size:1.1rem">volume_off</span> صامت';
+  showToast(STATE.soundOn ? "الصوت مفعّل" : "الصوت معطّل");
 }
 
 function updateSessionStats() {
@@ -825,7 +848,7 @@ function initInstallPWA() {
     const { outcome } = await deferredPrompt.userChoice;
     deferredPrompt = null;
     document.getElementById("installBanner")?.classList.add("hidden");
-    if(outcome === "accepted") showToast("✅ تم تثبيت التطبيق!");
+    if(outcome === "accepted") showToast("تم تثبيت التطبيق!");
   });
   document.getElementById("dismissInstall")?.addEventListener("click", () => {
     document.getElementById("installBanner")?.classList.add("hidden");
@@ -846,10 +869,7 @@ function debounce(fn, delay) {
   return (...args) => { clearTimeout(timer); timer = setTimeout(()=>fn(...args), delay); };
 }
 
-// ── VIEW SOURCE ──
-document.getElementById("viewSourceBtn")?.addEventListener("click", () => {
-  showToast("💻 يمكنك فتح مصادر الصفحة بـ F12");
-});
+
 
 // ── NAVBAR SCROLL SHADOW ──
 window.addEventListener("scroll", () => {
@@ -863,27 +883,14 @@ function checkRingDone() {
     const ring = document.querySelector(".tasbeeh-ring-wrap");
     ring?.classList.add("ring-done");
     ring?.addEventListener("animationend", () => ring.classList.remove("ring-done"), { once: true });
-    showToast(`🎉 أتممت ${toArabicNum(opt.target)} — ${opt.translation}`);
+    showToast(`أتممت ${toArabicNum(opt.target)} تسبيحة`);
   }
 }
 
-// Patch incrementTasbeeh to call checkRingDone
-const _origIncrement = incrementTasbeeh;
-// Already defined above — add celebration inside the function by hooking post-update
-// We'll wrap via override:
-(function patchIncrement() {
-  const arena = document.getElementById("tasbeehArena");
-  // Remove old listeners added in initTasbeeh and re-add with celebration
-  // Since we can't easily remove anonymous listeners, we use a flag approach
-  window.__tasbeehCheckDone = true;
-})();
-
-// Check after each count update (called at end of updateCountDisplay)
-const _origUpdateCount = updateCountDisplay;
 function updateCountDisplay() {
   const el = document.getElementById("tasbeehCount");
   if (el) el.textContent = toArabicNum(STATE.tasbeehCurrent);
-  if (window.__tasbeehCheckDone) checkRingDone();
+  checkRingDone();
 }
 
 // ── KEYBOARD SHORTCUTS ──
@@ -934,6 +941,6 @@ window.addEventListener("beforeunload", persistAll);
   if (!arena) return;
   arena.addEventListener("mousedown",  () => { timer = setTimeout(() => { if(confirm("إعادة التعيين؟")) resetTasbeeh(); }, 800); });
   arena.addEventListener("mouseup",    () => clearTimeout(timer));
-  arena.addEventListener("touchstart", () => { timer = setTimeout(() => { resetTasbeeh(); showToast("↺ تمت إعادة التعيين"); }, 900); }, { passive: true });
+  arena.addEventListener("touchstart", () => { timer = setTimeout(() => { resetTasbeeh(); showToast("تمت إعادة التعيين"); }, 900); }, { passive: true });
   arena.addEventListener("touchend",   () => clearTimeout(timer), { passive: true });
 })();
