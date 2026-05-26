@@ -65,7 +65,7 @@ function getGregorianDate() {
 function getHijriDate() {
   const now = new Date();
   try {
-    const hd = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+    const hd = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
       day:"numeric", month:"long", year:"numeric"
     }).format(now);
     return hd;
